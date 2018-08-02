@@ -7,8 +7,8 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.scrollHorizontalRef
-    this.titleRef
-    this.descriptionRef
+    this.titleInput
+    this.descriptionInput
     this.state = {
       addTaskModalVisible: false,
       isChecked: false
@@ -31,8 +31,6 @@ export default class App extends Component {
   addTask(visible) {
     this.setState({addTaskModalVisible: visible})
   }
-
-
 	render() {
 		return (
 			<View style={styles.body}>
@@ -106,13 +104,15 @@ export default class App extends Component {
               style={styles.simpleInput}
               maxLength={30}
               returnKeyType='next'
-              ref={(ref) => {this.titleRef=ref}}
+              onSubmitEditing={() => {this.descriptionInput.focus()}}
+              blurOnSubmit={false}
+              ref={(ref) => {this.titleInput=ref}}
             />
             <Text style={styles.inputTitle}>Task Description:</Text>
             <TextInput
               style={styles.bigInput}
               multiline={true}
-              ref={(ref) => {this.descriptionRef=ref}}
+              ref={(ref) => {this.descriptionInput=ref}}
             />
           </View>
           <View>
