@@ -46,6 +46,14 @@ export default class App extends Component {
     this.tasks.push(newTask)
     this.setState({addTaskModalVisible: visible})
   }
+  markTask() {
+    this.tasks.map((item) => {
+      if(item.isChecked) {
+        item.isDone=!item.isDone
+        item.isChecked = false
+      }
+    })
+  }
 	render() {
 		return (
 			<View style={styles.body}>
@@ -71,7 +79,8 @@ export default class App extends Component {
                 return (
                   <View style={styles.item}>
                     <Text onPress={() => this.setModifyModalVisible(true)}>{item.title}</Text>
-                    <CheckBox isChecked={item.isChecked} onClick={() => console.log(item.title)}/>
+                    <CheckBox isChecked={item.isChecked} onClick={() => item.isChecked=!item.isChecked}
+                    />
                   </View>
                 )
               }  
@@ -158,7 +167,7 @@ export default class App extends Component {
 			{/* Footer */}
 				<View style={styles.footer}>
 					<Button title='Add' color='white' onPress={() => { this.setAddTaskModalVisible(true)}}/>
-					<Button title='Mark' color='white' onPress={() => console.log('Mark')}/>
+					<Button title='Mark' color='white' onPress={() => {this.markTask()}}/>
 					<Button title='Delete' color='white' onPress={() => console.log('Delete')}/>
 				</View>
 			{/* Footer End */}
