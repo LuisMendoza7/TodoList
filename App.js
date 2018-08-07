@@ -6,7 +6,6 @@ import { styles } from './styles'
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.tasks = []
     this.scrollHorizontalRef
     this.titleInput
     this.descriptionInput
@@ -15,6 +14,7 @@ export default class App extends Component {
     this.modifyTitleInput
     this.modifyDescriptionInput
     this.state = {
+      tasks: [],
       addTaskModalVisible: false,
       modifyTaskModalVisible: false,
       isChecked: false,
@@ -43,16 +43,27 @@ export default class App extends Component {
       isChecked: false,
       isDone: false
     }
-    this.tasks.push(newTask)
-    this.setState({addTaskModalVisible: visible})
+    let addedTasks = this.state.tasks
+    addedTasks.push(newTask)
+    this.setState({addTaskModalVisible: visible, tasks: addedTasks})
   }
   markTask() {
-    this.tasks.map((item) => {
-      if(item.isChecked) {
-        item.isDone=!item.isDone
+    let markedTasks = this.state.tasks
+    markedTasks.map((item) => {if (item.isChecked) {
+        item.isDone = !item.isDone
         item.isChecked = false
       }
     })
+    this.setState({tasks: markedTasks})
+  }
+  checkTask(index) {
+    let checkedTasks = this.state.tasks
+    checkedTasks[index].isChecked = !checkedTasks[index].isChecked
+    this.setState({tasks: checkedTasks})
+  }
+  deleteTask() {
+    let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
+    this.setState({tasks: deletedTasks})
   }
 	render() {
 		return (
@@ -74,25 +85,24 @@ export default class App extends Component {
             ref={(ref) => {this.scrollHorizontalRef=ref}}
         >
 					<ScrollView style={styles.container}>
-            {this.tasks.map((item) => {
-              if(!item.isDone) {
-                return (
-                  <View style={styles.item}>
-                    <Text onPress={() => this.setModifyModalVisible(true)}>{item.title}</Text>
-                    <CheckBox isChecked={item.isChecked} onClick={() => item.isChecked=!item.isChecked}
-                    />
-                  </View>
-                )
-              }  
-            })}
+          {this.state.tasks.map((item, index) => {
+            if(!item.isDone) {
+              return (
+                <View style={styles.item}>
+                  <Text onPress={() => {this.setModifyModalVisible(true)}}>{item.title}</Text>
+                  <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)}/>
+                </View>
+              )
+            }
+          })}
 					</ScrollView>
 					<ScrollView style={styles.container}>
-          {this.tasks.map((item) => {
+          {this.state.tasks.map((item, index) => {
             if(item.isDone) {
               return (
                 <View style={styles.item}>
                   <Text>{item.title}</Text>
-                  <CheckBox isChecked={item.isChecked}/>
+                  <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)}/>
                 </View>
               )
             }
@@ -166,9 +176,9 @@ export default class App extends Component {
         </Modal>
 			{/* Footer */}
 				<View style={styles.footer}>
-					<Button title='Add' color='white' onPress={() => { this.setAddTaskModalVisible(true)}}/>
+					<Button title='Add' color='white' onPress={() => {this.setAddTaskModalVisible(true)}}/>
 					<Button title='Mark' color='white' onPress={() => {this.markTask()}}/>
-					<Button title='Delete' color='white' onPress={() => console.log('Delete')}/>
+					<Button title='Delete' color='white' onPress={() => {this.deleteTask()}}/>
 				</View>
 			{/* Footer End */}
 			</View>
