@@ -1,11 +1,12 @@
-import { StyleSheet } from 'react-native'
+import {
+  StyleSheet,
+  Dimensions
+} from 'react-native'
 
 export const styles = StyleSheet.create({
   body: {
-    display: 'flex',
-    flexDirection: 'column',
     backgroundColor: '#dbdbdb',
-    height: '100%'
+    flex: 1
   },
   box: {
     display: 'flex',
@@ -49,17 +50,20 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 15
   },
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)'
+  },
   modal: {
     borderRadius: 15,
     width: '80%',
-    height: '70%',
-    margin: '10%',
-    marginTop: '35%',
     padding: 15,
     backgroundColor: '#7892ba',
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    height: Dimensions.get('window').height / 2
   },
   modalTitle: {
     color: 'white',
@@ -90,6 +94,6 @@ export const styles = StyleSheet.create({
   modalFooter: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly'
   }
 })
