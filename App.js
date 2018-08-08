@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Button, Modal, TextInput, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  ScrollView,
+  Button,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
+} from 'react-native'
 import CheckBox from 'react-native-check-box'
+import { MessageBar, showMessage } from 'react-native-messages'
 import { styles } from './styles'
 
 export default class App extends Component {
@@ -8,18 +20,23 @@ export default class App extends Component {
     super(props)
     this.state = {
       tasks: [],
+      isOpen: false,
       addTaskModalVisible: false,
       modifyTaskModalVisible: false,
-      isChecked: false,
-      titleHolder: '',
-      descriptionHolder: '',
-      modifyTitleHolder: '',
-      modifyDescriptionHolder: '',
-      indexHolder: ''
+      taskTemplate: {
+        title: '',
+        description: '',
+        isChecked: false,
+        isDone: false
+      },
+      indexHolder: '',
+      isModify: false
     }
     this.scrollToDone = this.scrollToDone.bind(this)
     this.scrollToTasks = this.scrollToTasks.bind(this)
-    this.modifyModal = this.modifyModal.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.openModal = this.openModal.bind(this)
+    this.onClose = this.onClose.bind(this)
   }
   scrollToDone () {
     this.scrollHorizontalRef.scrollToEnd()
@@ -27,18 +44,25 @@ export default class App extends Component {
   scrollToTasks () {
     this.scrollHorizontalRef.scrollTo({x: 0, y: 0, animated: true})
   }
-  addTask (visible) {
-    let newTask = {
-      title: this.state.titleHolder,
-      description: this.state.descriptionHolder,
-      isChecked: false,
-      isDone: false
+  addTask () {
+    if (this.state.isModify) {
+      showMessage('Task Modified')
+      const { taskTemplate, tasks, indexHolder } = this.state
+      tasks[indexHolder] = taskTemplate
+      this.setState({isOpen: false, isModify: false, indexHolder: '', taskTemplate: { title: '', description: '', isChecked: false, isDone: false }})
+    } else {
+      showMessage('Task Added')
+      const { taskTemplate, tasks } = this.state
+      tasks.push(taskTemplate)
+      this.setState({isOpen: false, tasks, taskTemplate: { title: '', description: '', isChecked: false, isDone: false }})
     }
-    let addedTasks = this.state.tasks
-    addedTasks.push(newTask)
-    this.setState({addTaskModalVisible: visible, tasks: addedTasks, titleHolder: '', descriptionHolder: ''})
+  }
+  onChange (name, value) {
+    const { taskTemplate } = this.state
+    taskTemplate[name] = value
   }
   markTask () {
+    showMessage('Task Moved')
     let markedTasks = this.state.tasks
     markedTasks.map((item) => {
       if (item.isChecked) {
@@ -49,54 +73,27 @@ export default class App extends Component {
     this.setState({tasks: markedTasks})
   }
   checkTask (index) {
-    console.log(index)
     let checkedTasks = this.state.tasks
     checkedTasks[index].isChecked = !checkedTasks[index].isChecked
     this.setState({tasks: checkedTasks})
   }
   deleteTask () {
+    showMessage('Tasks Deleted')
     let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
     this.setState({tasks: deletedTasks})
   }
-  modifyTask () {
-    let modifiedTask = this.state.tasks
-    modifiedTask[this.state.indexHolder].title = this.state.modifyTitleHolder || modifiedTask[this.state.indexHolder].title
-    modifiedTask[this.state.indexHolder].description = this.state.modifyDescriptionHolder || modifiedTask[this.state.indexHolder].description
-    this.setState({modifyDescriptionHolder: '', modifyTitleHolder: '', tasks: modifiedTask})
-  }
-  modifyModal () {
-    if (this.state.tasks.length > 0 && this.state.indexHolder !== '') {
-      return (
-        <View style={styles.modal}>
-          <Text style={styles.modalTitle}>{this.state.tasks[this.state.indexHolder].title}</Text>
-          <View>
-            <Text style={styles.inputTitle}>Task Title:</Text>
-            <TextInput
-              value={this.state.tasks[this.state.indexHolder].title}
-              style={styles.simpleInput}
-              maxLength={30}
-              returnKeyType='next'
-              onSubmitEditing={() => { this.modifyDescriptionInput.focus() }}
-              onChangeText={(modifyTitleHolder) => { this.setState({modifyTitleHolder}) }}
-              blurOnSubmit={false}
-              ref={(ref) => { this.modifyTitleInput = ref }}
-            />
-            <Text style={styles.inputTitle}>Task Description:</Text>
-            <TextInput
-              value={this.state.tasks[this.state.indexHolder].description}
-              style={styles.bigInput}
-              onChangeText={(modifyDescriptionHolder) => { this.setState({modifyDescriptionHolder}) }}
-              multiline
-              ref={(ref) => { this.modifyDescriptionInput = ref }}
-            />
-          </View>
-          <View style={styles.modalFooter}>
-            <Button color='black' title='Close' onPress={() => this.setState({modifyTaskModalVisible: false})} />
-            <Button color='black' title='Modify' onPress={() => this.modifyTask()} />
-          </View>
-        </View>
-      )
+  openModal (type, index) {
+    let { tasks, taskTemplate } = this.state
+    let copyTasks = JSON.parse(JSON.stringify(tasks))
+    if (type === 'modify') {
+      taskTemplate = copyTasks[index]
+      this.setState({taskTemplate, isOpen: true, isModify: true, indexHolder: index})
+    } else {
+      this.setState({isOpen: true, taskTemplate: { title: '', description: '', isChecked: false, isDone: false }})
     }
+  }
+  onClose () {
+    this.setState({isOpen: false, isModify: false, taskTemplate: { title: '', description: '', isChecked: false, isDone: false }})
   }
   render () {
     return (
@@ -115,11 +112,11 @@ export default class App extends Component {
           scrollEnabled={false}
           ref={(ref) => { this.scrollHorizontalRef = ref }}
         >
-          <ScrollView style={styles.container}>
+          <ScrollView style={styles.container} alwaysBounceVertical={false}>
             {this.state.tasks.map((item, index) => {
               if (!item.isDone) {
                 return (
-                  <TouchableOpacity onPress={() => this.setState({indexHolder: index, modifyTaskModalVisible: true})}>
+                  <TouchableOpacity key={index} onPress={() => this.openModal('modify', index)}>
                     <View style={styles.item}>
                       <Text>{item.title}</Text>
                       <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)} />
@@ -129,11 +126,11 @@ export default class App extends Component {
               }
             })}
           </ScrollView>
-          <ScrollView style={styles.container}>
+          <ScrollView style={styles.container} alwaysBounceVertical={false}>
             {this.state.tasks.map((item, index) => {
               if (item.isDone) {
                 return (
-                  <View style={styles.item}>
+                  <View key={index} style={styles.item}>
                     <Text>{item.title}</Text>
                     <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)} />
                   </View>
@@ -143,52 +140,52 @@ export default class App extends Component {
           </ScrollView>
         </ScrollView>
         <Modal
-          animationType='slide'
+          animationType='fade'
           transparent
-          visible={this.state.addTaskModalVisible}
+          visible={this.state.isOpen}
           ref={(ref) => { this.addTaskModal = ref }}
         >
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Add a New Task</Text>
-            <View>
-              <Text style={styles.inputTitle}>Task Title:</Text>
-              <TextInput
-                style={styles.simpleInput}
-                maxLength={25}
-                returnKeyType='next'
-                onSubmitEditing={() => { this.descriptionInput.focus() }}
-                onChangeText={(titleHolder) => { this.setState({titleHolder}) }}
-                blurOnSubmit={false}
-                ref={(ref) => { this.titleInput = ref }}
-              />
-              <Text style={styles.inputTitle}>Task Description:</Text>
-              <TextInput
-                style={styles.bigInput}
-                multiline
-                onChangeText={(descriptionHolder) => { this.setState({descriptionHolder}) }}
-                ref={(ref) => { this.descriptionInput = ref }}
-              />
+          <KeyboardAvoidingView style={{flex: 1}} behavior='padding'>
+            <View style={styles.modalContainer}>
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss} accesible={false}>
+                <View style={styles.modal}>
+                  <Text style={styles.modalTitle}>{this.state.isModify ? this.state.taskTemplate.title : 'Add a New Task'}</Text>
+                  <View style={{paddingTop: 15, paddingBottom: 15}}>
+                    <Text style={styles.inputTitle}>Task Title:</Text>
+                    <TextInput
+                      style={styles.simpleInput}
+                      maxLength={25}
+                      returnKeyType='next'
+                      value={this.state.taskTemplate.title || ''}
+                      onSubmitEditing={() => { this.descriptionInput.focus() }}
+                      onChangeText={title => this.onChange('title', title)}
+                      blurOnSubmit={false}
+                      ref={(ref) => { this.titleInput = ref }}
+                    />
+                    <Text style={styles.inputTitle}>Task Description:</Text>
+                    <TextInput
+                      style={styles.bigInput}
+                      multiline
+                      value={this.state.taskTemplate.description || ''}
+                      onChangeText={description => this.onChange('description', description)}
+                      ref={(ref) => { this.descriptionInput = ref }}
+                    />
+                  </View>
+                  <View style={styles.modalFooter}>
+                    <Button color='black' title='Close' onPress={this.onClose} />
+                    <Button color='black' title={this.state.isModify ? 'Modify' : 'Add'} onPress={() => this.addTask()} />
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-            <View style={styles.modalFooter}>
-              <Button color='black' title='Close' onPress={() => this.setState({addTaskModalVisible: false})} />
-              <Button color='black' title='Add' onPress={() => { this.addTask(!this.state.addTaskModalVisible) }} />
-            </View>
-          </View>
-        </Modal>
-
-        <Modal
-          animationType='slide'
-          transparent
-          visible={this.state.modifyTaskModalVisible}
-          ref={(ref) => { this.modifyTaskModal = ref }}
-        >
-          {this.modifyModal()}
+          </KeyboardAvoidingView>
         </Modal>
         <View style={styles.footer}>
-          <Button title='Add' color='white' onPress={() => this.setState({addTaskModalVisible: true})} />
+          <Button title='Add' color='white' onPress={this.openModal} />
           <Button title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
           <Button title='Delete' color='white' onPress={() => { this.deleteTask() }} />
         </View>
+        <MessageBar />
       </View>
     )
   }
