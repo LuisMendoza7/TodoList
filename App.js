@@ -159,7 +159,7 @@ export default class App extends Component {
                       style={styles.simpleInput}
                       maxLength={25}
                       returnKeyType='next'
-                      value={this.state.taskTemplate.title || ''}
+                      // value={this.state.taskTemplate.title || null}
                       onSubmitEditing={() => { this.descriptionInput.focus() }}
                       onChangeText={title => this.onChange('title', title)}
                       blurOnSubmit={false}
@@ -169,7 +169,7 @@ export default class App extends Component {
                     <TextInput
                       style={styles.bigInput}
                       multiline
-                      value={this.state.taskTemplate.description || ''}
+                      // value={this.state.taskTemplate.description || ''}
                       onChangeText={description => this.onChange('description', description)}
                       ref={(ref) => { this.descriptionInput = ref }}
                     />
@@ -184,9 +184,9 @@ export default class App extends Component {
           </KeyboardAvoidingView>
         </Modal>
         <View style={styles.footer}>
-          <Button title='Add' color='white' onPress={this.openModal} />
-          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
-          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
+          <Button title='Add' color='black' onPress={this.openModal} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='black' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='black' onPress={() => { this.deleteTask() }} />
         </View>
         <MessageBar />
       </View>
