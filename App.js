@@ -62,7 +62,7 @@ export default class App extends Component {
     taskTemplate[name] = value
   }
   markTask () {
-    showMessage('Task Moved')
+    showMessage('Moved')
     let { tasks } = this.state
     tasks.map((item) => {
       if (item.isChecked) {
@@ -78,7 +78,7 @@ export default class App extends Component {
     this.setState({tasks})
   }
   deleteTask () {
-    showMessage('Tasks Deleted')
+    showMessage('Deleted')
     let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
     this.setState({tasks: deletedTasks})
     // let { tasks } = this.state
@@ -185,8 +185,8 @@ export default class App extends Component {
         </Modal>
         <View style={styles.footer}>
           <Button title='Add' color='white' onPress={this.openModal} />
-          <Button title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
-          <Button title='Delete' color='white' onPress={() => { this.deleteTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
         </View>
         <MessageBar />
       </View>
