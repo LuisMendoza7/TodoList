@@ -63,24 +63,27 @@ export default class App extends Component {
   }
   markTask () {
     showMessage('Task Moved')
-    let markedTasks = this.state.tasks
-    markedTasks.map((item) => {
+    let { tasks } = this.state
+    tasks.map((item) => {
       if (item.isChecked) {
         item.isDone = !item.isDone
         item.isChecked = false
       }
     })
-    this.setState({tasks: markedTasks})
+    this.setState({tasks})
   }
   checkTask (index) {
-    let checkedTasks = this.state.tasks
-    checkedTasks[index].isChecked = !checkedTasks[index].isChecked
-    this.setState({tasks: checkedTasks})
+    let { tasks } = this.state
+    tasks[index].isChecked = !tasks[index].isChecked
+    this.setState({tasks})
   }
   deleteTask () {
     showMessage('Tasks Deleted')
     let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
     this.setState({tasks: deletedTasks})
+    // let { tasks } = this.state
+    // tasks = tasks.filter(item => !item.isChecked)
+    // this.setState({tasks})
   }
   openModal (type, index) {
     let { tasks, taskTemplate } = this.state
