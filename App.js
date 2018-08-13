@@ -62,25 +62,28 @@ export default class App extends Component {
     taskTemplate[name] = value
   }
   markTask () {
-    showMessage('Task Moved')
-    let markedTasks = this.state.tasks
-    markedTasks.map((item) => {
+    showMessage('Moved')
+    let { tasks } = this.state
+    tasks.map((item) => {
       if (item.isChecked) {
         item.isDone = !item.isDone
         item.isChecked = false
       }
     })
-    this.setState({tasks: markedTasks})
+    this.setState({tasks})
   }
   checkTask (index) {
-    let checkedTasks = this.state.tasks
-    checkedTasks[index].isChecked = !checkedTasks[index].isChecked
-    this.setState({tasks: checkedTasks})
+    let { tasks } = this.state
+    tasks[index].isChecked = !tasks[index].isChecked
+    this.setState({tasks})
   }
   deleteTask () {
-    showMessage('Tasks Deleted')
+    showMessage('Deleted')
     let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
     this.setState({tasks: deletedTasks})
+    // let { tasks } = this.state
+    // tasks = tasks.filter(item => !item.isChecked)
+    // this.setState({tasks})
   }
   openModal (type, index) {
     let { tasks, taskTemplate } = this.state
@@ -156,7 +159,7 @@ export default class App extends Component {
                       style={styles.simpleInput}
                       maxLength={25}
                       returnKeyType='next'
-                      value={this.state.taskTemplate.title || ''}
+                      // value={this.state.taskTemplate.title || null}
                       onSubmitEditing={() => { this.descriptionInput.focus() }}
                       onChangeText={title => this.onChange('title', title)}
                       blurOnSubmit={false}
@@ -166,7 +169,7 @@ export default class App extends Component {
                     <TextInput
                       style={styles.bigInput}
                       multiline
-                      value={this.state.taskTemplate.description || ''}
+                      // value={this.state.taskTemplate.description || ''}
                       onChangeText={description => this.onChange('description', description)}
                       ref={(ref) => { this.descriptionInput = ref }}
                     />
@@ -181,9 +184,9 @@ export default class App extends Component {
           </KeyboardAvoidingView>
         </Modal>
         <View style={styles.footer}>
-          <Button title='Add' color='white' onPress={this.openModal} />
-          <Button title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
-          <Button title='Delete' color='white' onPress={() => { this.deleteTask() }} />
+          <Button title='Add' color='black' onPress={this.openModal} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='black' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='black' onPress={() => { this.deleteTask() }} />
         </View>
         <MessageBar />
       </View>
