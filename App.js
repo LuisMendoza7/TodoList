@@ -4,16 +4,20 @@ import {
   Text,
   ScrollView,
   Button,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView
+  TouchableOpacity
 } from 'react-native'
 import CheckBox from 'react-native-check-box'
 import { MessageBar, showMessage } from 'react-native-messages'
+import styled from './node_modules/styled-components'
 import { styles } from './styles'
+import { TaskModal } from './components/modal'
+
+const NavBar = styled.View`
+  background-color: #75a7f9
+  flex-direction: row
+  height: 40
+  justify-content: space-evenly
+`
 
 export default class App extends Component {
   constructor (props) {
@@ -104,10 +108,10 @@ export default class App extends Component {
         <View style={styles.box}>
           <Text style={styles.title}>To-Do List</Text>
         </View>
-        <View style={styles.tabs}>
+        <NavBar>
           <Button color='white' title='Tasks' onPress={this.scrollToTasks} />
           <Button color='white' title='Done' onPress={this.scrollToDone} />
-        </View>
+        </NavBar>
         <ScrollView
           horizontal
           contentContainerStyle={{width: '200%'}}
@@ -142,11 +146,11 @@ export default class App extends Component {
             })}
           </ScrollView>
         </ScrollView>
-        <Modal
+        <TaskModal />
+        {/* <Modal
           animationType='fade'
           transparent
           visible={this.state.isOpen}
-          ref={(ref) => { this.addTaskModal = ref }}
         >
           <KeyboardAvoidingView style={{flex: 1}} behavior='padding'>
             <View style={styles.modalContainer}>
@@ -182,11 +186,11 @@ export default class App extends Component {
               </TouchableWithoutFeedback>
             </View>
           </KeyboardAvoidingView>
-        </Modal>
+        </Modal> */}
         <View style={styles.footer}>
-          <Button title='Add' color='black' onPress={this.openModal} />
-          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='black' onPress={() => { this.markTask() }} />
-          <Button disabled={this.state.tasks.length === 0} title='Delete' color='black' onPress={() => { this.deleteTask() }} />
+          <Button title='Add' color='white' onPress={this.openModal} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
         </View>
         <MessageBar />
       </View>
