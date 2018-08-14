@@ -3,14 +3,19 @@ import styled from 'styled-components'
 export const TitleInput = styled.TextInput`
   background-color: white
   margin-top: 5
+  margin-bottom: 15
   border-radius: 4
   height: 25
+  padding-left: 5
+  padding-right: 5
 `
 export const DescriptionInput = styled.TextInput`
   background-color: white
   margin-top: 5
   border-radius: 4
   height: 100
+  padding-left: 5
+  padding-right: 5
 `
 export const Title = styled.Text`
   color: white
