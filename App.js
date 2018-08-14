@@ -4,16 +4,20 @@ import {
   Text,
   ScrollView,
   Button,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView
+  TouchableOpacity
 } from 'react-native'
 import CheckBox from 'react-native-check-box'
 import { MessageBar, showMessage } from 'react-native-messages'
+import styled from './node_modules/styled-components'
 import { styles } from './styles'
+import { TaskModal } from './components/modal'
+
+const NavBar = styled.View`
+  background-color: #75a7f9
+  flex-direction: row
+  height: 40
+  justify-content: space-evenly
+`
 
 export default class App extends Component {
   constructor (props) {
@@ -37,6 +41,7 @@ export default class App extends Component {
     this.onChange = this.onChange.bind(this)
     this.openModal = this.openModal.bind(this)
     this.onClose = this.onClose.bind(this)
+    this.addTask = this.addTask.bind(this)
   }
   scrollToDone () {
     this.scrollHorizontalRef.scrollToEnd()
@@ -60,6 +65,7 @@ export default class App extends Component {
   onChange (name, value) {
     const { taskTemplate } = this.state
     taskTemplate[name] = value
+    this.setState({taskTemplate})
   }
   markTask () {
     showMessage('Moved')
@@ -81,9 +87,6 @@ export default class App extends Component {
     showMessage('Deleted')
     let deletedTasks = this.state.tasks.filter((item) => !item.isChecked)
     this.setState({tasks: deletedTasks})
-    // let { tasks } = this.state
-    // tasks = tasks.filter(item => !item.isChecked)
-    // this.setState({tasks})
   }
   openModal (type, index) {
     let { tasks, taskTemplate } = this.state
@@ -104,10 +107,10 @@ export default class App extends Component {
         <View style={styles.box}>
           <Text style={styles.title}>To-Do List</Text>
         </View>
-        <View style={styles.tabs}>
+        <NavBar>
           <Button color='white' title='Tasks' onPress={this.scrollToTasks} />
           <Button color='white' title='Done' onPress={this.scrollToDone} />
-        </View>
+        </NavBar>
         <ScrollView
           horizontal
           contentContainerStyle={{width: '200%'}}
@@ -142,51 +145,20 @@ export default class App extends Component {
             })}
           </ScrollView>
         </ScrollView>
-        <Modal
-          animationType='fade'
-          transparent
-          visible={this.state.isOpen}
-          ref={(ref) => { this.addTaskModal = ref }}
-        >
-          <KeyboardAvoidingView style={{flex: 1}} behavior='padding'>
-            <View style={styles.modalContainer}>
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss} accesible={false}>
-                <View style={styles.modal}>
-                  <Text style={styles.modalTitle}>{this.state.isModify ? this.state.taskTemplate.title : 'Add a New Task'}</Text>
-                  <View style={{paddingTop: 15, paddingBottom: 15}}>
-                    <Text style={styles.inputTitle}>Task Title:</Text>
-                    <TextInput
-                      style={styles.simpleInput}
-                      maxLength={25}
-                      returnKeyType='next'
-                      // value={this.state.taskTemplate.title || null}
-                      onSubmitEditing={() => { this.descriptionInput.focus() }}
-                      onChangeText={title => this.onChange('title', title)}
-                      blurOnSubmit={false}
-                      ref={(ref) => { this.titleInput = ref }}
-                    />
-                    <Text style={styles.inputTitle}>Task Description:</Text>
-                    <TextInput
-                      style={styles.bigInput}
-                      multiline
-                      // value={this.state.taskTemplate.description || ''}
-                      onChangeText={description => this.onChange('description', description)}
-                      ref={(ref) => { this.descriptionInput = ref }}
-                    />
-                  </View>
-                  <View style={styles.modalFooter}>
-                    <Button color='black' title='Close' onPress={this.onClose} />
-                    <Button color='black' title={this.state.isModify ? 'Modify' : 'Add'} onPress={() => this.addTask()} />
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </KeyboardAvoidingView>
-        </Modal>
+        <TaskModal
+          isVisible={this.state.isOpen}
+          onChange={this.onChange}
+          addTask={this.addTask}
+          onClose={this.onClose}
+          buttonTitle={this.state.isModify ? 'Modify' : 'Add'}
+          title={this.state.isModify ? this.state.taskTemplate.title : 'Add Task'}
+          titleValue={this.state.taskTemplate.title || null}
+          descriptionValue={this.state.taskTemplate.description || ''}
+        />
         <View style={styles.footer}>
-          <Button title='Add' color='black' onPress={this.openModal} />
-          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='black' onPress={() => { this.markTask() }} />
-          <Button disabled={this.state.tasks.length === 0} title='Delete' color='black' onPress={() => { this.deleteTask() }} />
+          <Button title='Add' color='white' onPress={this.openModal} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
         </View>
         <MessageBar />
       </View>

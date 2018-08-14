@@ -50,12 +50,6 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 15
   },
-  modalContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.2)'
-  },
   modal: {
     borderRadius: 15,
     width: '80%',
