@@ -2,15 +2,13 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  ScrollView,
-  Button,
-  TouchableOpacity
+  Button
 } from 'react-native'
-import CheckBox from 'react-native-check-box'
 import { MessageBar, showMessage } from 'react-native-messages'
 import styled from './node_modules/styled-components'
 import { styles } from './styles'
 import { TaskModal } from './components/modal'
+import { TaskScrollView } from './components/scrollView'
 
 const NavBar = styled.View`
   background-color: #75a7f9
@@ -42,6 +40,7 @@ export default class App extends Component {
     this.openModal = this.openModal.bind(this)
     this.onClose = this.onClose.bind(this)
     this.addTask = this.addTask.bind(this)
+    this.checkTask = this.checkTask.bind(this)
   }
   scrollToDone () {
     this.scrollHorizontalRef.scrollToEnd()
@@ -111,7 +110,12 @@ export default class App extends Component {
           <Button color='white' title='Tasks' onPress={this.scrollToTasks} />
           <Button color='white' title='Done' onPress={this.scrollToDone} />
         </NavBar>
-        <ScrollView
+        <TaskScrollView
+          tasks={this.state.tasks}
+          checkTask={this.checkTask}
+          openModal={this.openModal}
+        />
+        {/* <ScrollView
           horizontal
           contentContainerStyle={{width: '200%'}}
           pagingEnabled
@@ -144,7 +148,7 @@ export default class App extends Component {
               }
             })}
           </ScrollView>
-        </ScrollView>
+        </ScrollView> */}
         <TaskModal
           isVisible={this.state.isOpen}
           onChange={this.onChange}
