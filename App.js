@@ -8,7 +8,7 @@ import { MessageBar, showMessage } from 'react-native-messages'
 import styled from './node_modules/styled-components'
 import { styles } from './styles'
 import { TaskModal } from './components/modal'
-import { TaskScrollView } from './components/scrollView'
+import { TaskScrollView } from './components/taskScrollView'
 
 const NavBar = styled.View`
   background-color: #75a7f9
