@@ -18,6 +18,7 @@ export class TaskScrollView extends Component {
         contentContainerStyle={{width: '200%'}}
         pagingEnabled
         scrollEnabled={false}
+        ref={(ref) => { this.scrollViewRef = ref }}
       >
         <TasksList alwaysBounceVertical={false}>
           {this.props.tasks.map((item, index) => {
@@ -49,5 +50,11 @@ export class TaskScrollView extends Component {
         </TasksList>
       </ScrollView>
     )
+  }
+  scrollToDone () {
+    this.scrollViewRef.scrollToEnd()
+  }
+  scrollToTasks () {
+    this.scrollViewRef.scrollTo({x: 0, y: 0, animated: true})
   }
 }
