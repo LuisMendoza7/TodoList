@@ -1,22 +1,14 @@
 import React, { Component } from 'react'
 import {
-  View,
-  Button
+  View
 } from 'react-native'
 import { MessageBar, showMessage } from 'react-native-messages'
-import styled from './node_modules/styled-components'
 import { styles } from './styles'
 import { TaskModal } from './components/taskModal'
 import { TaskScrollView } from './components/taskScrollView'
 import { Footer } from './components/footer'
 import { Header } from './components/header'
-
-const NavBar = styled.View` 
-  background-color: #75a7f9
-  flex-direction: row
-  height: 40
-  justify-content: space-evenly
-`
+import { ScrollViewButtons } from './components/scrollViewButtons'
 
 export default class App extends Component {
   constructor (props) {
@@ -49,10 +41,10 @@ export default class App extends Component {
     return (
       <View style={styles.body}>
         <Header />
-        <NavBar>
-          <Button color='white' title='Tasks' onPress={this.handleScrollToTasks} />
-          <Button color='white' title='Done' onPress={this.handleScrollToDone} />
-        </NavBar>
+        <ScrollViewButtons
+          scrollToDone={this.handleScrollToDone}
+          scrollToTasks={this.handleScrollToTasks}
+        />
         <TaskScrollView
           tasks={this.state.tasks}
           checkTask={this.checkTask}
