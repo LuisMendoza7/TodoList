@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
-import {
-  View
-} from 'react-native'
 import { MessageBar, showMessage } from 'react-native-messages'
-import { styles } from './styles'
+import styled from 'styled-components'
 import { TaskModal } from './components/taskModal'
 import { TaskScrollView } from './components/taskScrollView'
 import { Footer } from './components/footer'
 import { Header } from './components/header'
 import { ScrollViewButtons } from './components/scrollViewButtons'
+
+export const BodyContainer = styled.View`
+  background-color: #dbdbdb
+  flex: 1
+`
 
 export default class App extends Component {
   constructor (props) {
@@ -39,7 +41,7 @@ export default class App extends Component {
   }
   render () {
     return (
-      <View style={styles.body}>
+      <BodyContainer>
         <Header />
         <ScrollViewButtons
           scrollToDone={this.handleScrollToDone}
@@ -68,7 +70,7 @@ export default class App extends Component {
           deleteTask={this.deleteTask}
         />
         <MessageBar />
-      </View>
+      </BodyContainer>
     )
   }
   handleScrollToDone () {
