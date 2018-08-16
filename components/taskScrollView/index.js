@@ -12,22 +12,28 @@ import {
 
 export class TaskScrollView extends Component {
   render () {
+    const {
+      tasks,
+      openModal,
+      checkTask
+    } = this.props
     return (
       <ScrollView
         horizontal
         contentContainerStyle={{width: '200%'}}
         pagingEnabled
         scrollEnabled={false}
+        showsHorizontalScrollIndicator={false}
         ref={(ref) => { this.scrollViewRef = ref }}
       >
         <TasksList alwaysBounceVertical={false}>
-          {this.props.tasks.map((item, index) => {
+          {tasks.map((item, index) => {
             if (!item.isDone) {
               return (
-                <TouchableOpacity key={index} onPress={() => this.props.openModal('modify', index)}>
+                <TouchableOpacity key={index} onPress={() => openModal('modify', index)}>
                   <TaskItem>
                     <Text>{item.title}</Text>
-                    <CheckBox isChecked={item.isChecked} onClick={() => this.props.checkTask(index)} />
+                    <CheckBox isChecked={item.isChecked} onClick={() => checkTask(index)} />
                   </TaskItem>
                 </TouchableOpacity>
               )
@@ -35,13 +41,13 @@ export class TaskScrollView extends Component {
           })}
         </TasksList>
         <TasksList alwaysBounceVertical={false}>
-          {this.props.tasks.map((item, index) => {
+          {tasks.map((item, index) => {
             if (item.isDone) {
               return (
                 <TouchableOpacity key={index}>
                   <TaskItem>
                     <Text>{item.title}</Text>
-                    <CheckBox isChecked={item.isChecked} onClick={() => this.props.checkTask(index)} />
+                    <CheckBox isChecked={item.isChecked} onClick={() => checkTask(index)} />
                   </TaskItem>
                 </TouchableOpacity>
               )

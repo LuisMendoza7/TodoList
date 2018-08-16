@@ -7,8 +7,9 @@ export const HeaderContainer = styled.View`
   background-color: #83b1fc
   height: 70
 `
+
 export const Title = styled.Text`
   color: white
   font-weight: bold
-  font-size: 20
+  font-size: 22
 `
