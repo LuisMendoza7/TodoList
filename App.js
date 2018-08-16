@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   View,
-  Text,
   Button
 } from 'react-native'
 import { MessageBar, showMessage } from 'react-native-messages'
@@ -10,6 +9,7 @@ import { styles } from './styles'
 import { TaskModal } from './components/taskModal'
 import { TaskScrollView } from './components/taskScrollView'
 import { Footer } from './components/footer'
+import { Header } from './components/header'
 
 const NavBar = styled.View` 
   background-color: #75a7f9
@@ -48,9 +48,7 @@ export default class App extends Component {
   render () {
     return (
       <View style={styles.body}>
-        <View style={styles.box}>
-          <Text style={styles.title}>To-Do List</Text>
-        </View>
+        <Header />
         <NavBar>
           <Button color='white' title='Tasks' onPress={this.handleScrollToTasks} />
           <Button color='white' title='Done' onPress={this.handleScrollToDone} />
