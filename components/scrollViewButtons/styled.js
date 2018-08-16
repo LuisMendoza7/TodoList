@@ -6,3 +6,16 @@ export const ButtonContainer = styled.View`
   height: 40
   justify-content: space-evenly
 `
+
+export const TitleContainer = styled.View`
+  height: 100%
+  width: 120
+  align-items: center
+  justify-content: center
+`
+
+export const ButtonTitle = styled.Text`
+  font-size: 18
+  font-weight: bold
+  color: white
+`

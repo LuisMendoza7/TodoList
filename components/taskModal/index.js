@@ -4,7 +4,8 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
-  Button
+  TouchableOpacity,
+  Platform
 } from 'react-native'
 import {
   KeyboardView,
@@ -15,44 +16,65 @@ import {
   Label,
   TitleInput,
   DescriptionInput,
-  Footer
+  Footer,
+  TitleContainer,
+  ButtonTitle
 } from './styled'
 
 export class TaskModal extends Component {
   render () {
+    const {
+      isVisible,
+      title,
+      titleValue,
+      descriptionValue,
+      onClose,
+      addTask,
+      buttonTitle,
+      onChange
+    } = this.props
     return (
       <View>
         <Modal
           animationType='fade'
           transparent
-          visible={this.props.isVisible}
+          visible={isVisible}
         >
-          <KeyboardView behavior='padding'>
+          <KeyboardView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ModalContainer>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss} accesible={false}>
                 <ModalView>
-                  <Title>{this.props.title}</Title>
+                  <Title>{title}</Title>
                   <Padding>
                     <Label>Title:</Label>
                     <TitleInput
                       maxLength={25}
                       returnKeyType='next'
                       blurOnSubmit={false}
-                      value={this.props.titleValue}
-                      onChangeText={title => this.props.onChange('title', title)}
+                      value={titleValue}
+                      onChangeText={title => onChange('title', title)}
                       onSubmitEditing={() => { this.descriptionInput.root.focus() }}
                     />
                     <Label>Description:</Label>
                     <DescriptionInput
+                      textAlignVertical='top'
                       multiline
-                      value={this.props.descriptionValue}
-                      onChangeText={description => this.props.onChange('description', description)}
+                      value={descriptionValue}
+                      onChangeText={description => onChange('description', description)}
                       ref={(input) => { this.descriptionInput = input }}
                     />
                   </Padding>
                   <Footer>
-                    <Button color='black' title='Close' onPress={this.props.onClose} />
-                    <Button color='black' title={this.props.buttonTitle} onPress={this.props.addTask} />
+                    <TouchableOpacity onPress={onClose}>
+                      <TitleContainer>
+                        <ButtonTitle>Close</ButtonTitle>
+                      </TitleContainer>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={addTask}>
+                      <TitleContainer>
+                        <ButtonTitle>{buttonTitle}</ButtonTitle>
+                      </TitleContainer>
+                    </TouchableOpacity>
                   </Footer>
                 </ModalView>
               </TouchableWithoutFeedback>

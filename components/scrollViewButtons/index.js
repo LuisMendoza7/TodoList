@@ -1,21 +1,29 @@
 import React, { Component } from 'react'
-import { Button } from 'react-native'
-import { ButtonContainer } from './styled'
+import { TouchableOpacity } from 'react-native'
+import {
+  ButtonContainer,
+  ButtonTitle,
+  TitleContainer
+} from './styled'
 
 export class ScrollViewButtons extends Component {
   render () {
+    const {
+      scrollToDone,
+      scrollToTasks
+    } = this.props
     return (
       <ButtonContainer>
-        <Button
-          color='white'
-          title='Tasks'
-          onPress={this.props.scrollToTasks}
-        />
-        <Button
-          color='white'
-          title='Done'
-          onPress={this.props.scrollToDone}
-        />
+        <TouchableOpacity onPress={scrollToTasks}>
+          <TitleContainer>
+            <ButtonTitle>Tasks</ButtonTitle>
+          </TitleContainer>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={scrollToDone}>
+          <TitleContainer>
+            <ButtonTitle>Done</ButtonTitle>
+          </TitleContainer>
+        </TouchableOpacity>
       </ButtonContainer>
     )
   }

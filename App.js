@@ -64,7 +64,7 @@ export default class App extends Component {
           descriptionValue={this.state.taskTemplate.description || ''}
         />
         <Footer
-          tasks={this.state.tasks}
+          disable={this.state.tasks.length === 0}
           openModal={this.openModal}
           markTask={this.markTask}
           deleteTask={this.deleteTask}
