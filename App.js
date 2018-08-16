@@ -9,6 +9,7 @@ import styled from './node_modules/styled-components'
 import { styles } from './styles'
 import { TaskModal } from './components/taskModal'
 import { TaskScrollView } from './components/taskScrollView'
+import { Footer } from './components/footer'
 
 const NavBar = styled.View` 
   background-color: #75a7f9
@@ -41,6 +42,8 @@ export default class App extends Component {
     this.checkTask = this.checkTask.bind(this)
     this.handleScrollToDone = this.handleScrollToDone.bind(this)
     this.handleScrollToTasks = this.handleScrollToTasks.bind(this)
+    this.markTask = this.markTask.bind(this)
+    this.deleteTask = this.deleteTask.bind(this)
   }
   render () {
     return (
@@ -68,11 +71,12 @@ export default class App extends Component {
           titleValue={this.state.taskTemplate.title || null}
           descriptionValue={this.state.taskTemplate.description || ''}
         />
-        <View style={styles.footer}>
-          <Button title='Add' color='white' onPress={this.openModal} />
-          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
-          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
-        </View>
+        <Footer
+          tasks={this.state.tasks}
+          openModal={this.openModal}
+          markTask={this.markTask}
+          deleteTask={this.deleteTask}
+        />
         <MessageBar />
       </View>
     )
