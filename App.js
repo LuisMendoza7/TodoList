@@ -7,7 +7,7 @@ import {
 import { MessageBar, showMessage } from 'react-native-messages'
 import styled from './node_modules/styled-components'
 import { styles } from './styles'
-import { TaskModal } from './components/modal'
+import { TaskModal } from './components/taskModal'
 import { TaskScrollView } from './components/taskScrollView'
 
 const NavBar = styled.View`
