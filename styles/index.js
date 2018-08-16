@@ -25,12 +25,5 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 40,
     justifyContent: 'space-evenly'
-  },
-  footer: {
-    backgroundColor: '#75a7f9',
-    display: 'flex',
-    flexDirection: 'row',
-    height: 40,
-    justifyContent: 'space-evenly'
   }
 })
