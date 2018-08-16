@@ -2,17 +2,15 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  ScrollView,
-  Button,
-  TouchableOpacity
+  Button
 } from 'react-native'
-import CheckBox from 'react-native-check-box'
 import { MessageBar, showMessage } from 'react-native-messages'
 import styled from './node_modules/styled-components'
 import { styles } from './styles'
-import { TaskModal } from './components/modal'
+import { TaskModal } from './components/taskModal'
+import { TaskScrollView } from './components/taskScrollView'
 
-const NavBar = styled.View`
+const NavBar = styled.View` 
   background-color: #75a7f9
   flex-direction: row
   height: 40
@@ -36,18 +34,54 @@ export default class App extends Component {
       indexHolder: '',
       isModify: false
     }
-    this.scrollToDone = this.scrollToDone.bind(this)
-    this.scrollToTasks = this.scrollToTasks.bind(this)
     this.onChange = this.onChange.bind(this)
     this.openModal = this.openModal.bind(this)
     this.onClose = this.onClose.bind(this)
     this.addTask = this.addTask.bind(this)
+    this.checkTask = this.checkTask.bind(this)
+    this.handleScrollToDone = this.handleScrollToDone.bind(this)
+    this.handleScrollToTasks = this.handleScrollToTasks.bind(this)
   }
-  scrollToDone () {
-    this.scrollHorizontalRef.scrollToEnd()
+  render () {
+    return (
+      <View style={styles.body}>
+        <View style={styles.box}>
+          <Text style={styles.title}>To-Do List</Text>
+        </View>
+        <NavBar>
+          <Button color='white' title='Tasks' onPress={this.handleScrollToTasks} />
+          <Button color='white' title='Done' onPress={this.handleScrollToDone} />
+        </NavBar>
+        <TaskScrollView
+          tasks={this.state.tasks}
+          checkTask={this.checkTask}
+          openModal={this.openModal}
+          ref='TaskScrollView'
+        />
+        <TaskModal
+          isVisible={this.state.isOpen}
+          onChange={this.onChange}
+          addTask={this.addTask}
+          onClose={this.onClose}
+          buttonTitle={this.state.isModify ? 'Modify' : 'Add'}
+          title={this.state.isModify ? this.state.taskTemplate.title : 'Add Task'}
+          titleValue={this.state.taskTemplate.title || null}
+          descriptionValue={this.state.taskTemplate.description || ''}
+        />
+        <View style={styles.footer}>
+          <Button title='Add' color='white' onPress={this.openModal} />
+          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
+          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
+        </View>
+        <MessageBar />
+      </View>
+    )
   }
-  scrollToTasks () {
-    this.scrollHorizontalRef.scrollTo({x: 0, y: 0, animated: true})
+  handleScrollToDone () {
+    this.refs.TaskScrollView.scrollToDone()
+  }
+  handleScrollToTasks () {
+    this.refs.TaskScrollView.scrollToTasks()
   }
   addTask () {
     if (this.state.isModify) {
@@ -100,68 +134,5 @@ export default class App extends Component {
   }
   onClose () {
     this.setState({isOpen: false, isModify: false, taskTemplate: { title: '', description: '', isChecked: false, isDone: false }})
-  }
-  render () {
-    return (
-      <View style={styles.body}>
-        <View style={styles.box}>
-          <Text style={styles.title}>To-Do List</Text>
-        </View>
-        <NavBar>
-          <Button color='white' title='Tasks' onPress={this.scrollToTasks} />
-          <Button color='white' title='Done' onPress={this.scrollToDone} />
-        </NavBar>
-        <ScrollView
-          horizontal
-          contentContainerStyle={{width: '200%'}}
-          pagingEnabled
-          scrollEnabled={false}
-          ref={(ref) => { this.scrollHorizontalRef = ref }}
-        >
-          <ScrollView style={styles.container} alwaysBounceVertical={false}>
-            {this.state.tasks.map((item, index) => {
-              if (!item.isDone) {
-                return (
-                  <TouchableOpacity key={index} onPress={() => this.openModal('modify', index)}>
-                    <View style={styles.item}>
-                      <Text>{item.title}</Text>
-                      <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)} />
-                    </View>
-                  </TouchableOpacity>
-                )
-              }
-            })}
-          </ScrollView>
-          <ScrollView style={styles.container} alwaysBounceVertical={false}>
-            {this.state.tasks.map((item, index) => {
-              if (item.isDone) {
-                return (
-                  <View key={index} style={styles.item}>
-                    <Text>{item.title}</Text>
-                    <CheckBox isChecked={item.isChecked} onClick={() => this.checkTask(index)} />
-                  </View>
-                )
-              }
-            })}
-          </ScrollView>
-        </ScrollView>
-        <TaskModal
-          isVisible={this.state.isOpen}
-          onChange={this.onChange}
-          addTask={this.addTask}
-          onClose={this.onClose}
-          buttonTitle={this.state.isModify ? 'Modify' : 'Add'}
-          title={this.state.isModify ? this.state.taskTemplate.title : 'Add Task'}
-          titleValue={this.state.taskTemplate.title || null}
-          descriptionValue={this.state.taskTemplate.description || ''}
-        />
-        <View style={styles.footer}>
-          <Button title='Add' color='white' onPress={this.openModal} />
-          <Button disabled={this.state.tasks.length === 0} title='Done/Undone' color='white' onPress={() => { this.markTask() }} />
-          <Button disabled={this.state.tasks.length === 0} title='Delete' color='white' onPress={() => { this.deleteTask() }} />
-        </View>
-        <MessageBar />
-      </View>
-    )
   }
 }
