@@ -27,7 +27,8 @@ export default class App extends Component {
         isDone: false
       },
       indexHolder: '',
-      isModify: false
+      isModify: false,
+      isEditing: false
     }
     this.onChange = this.onChange.bind(this)
     this.openModal = this.openModal.bind(this)
@@ -55,6 +56,7 @@ export default class App extends Component {
         />
         <TaskModal
           isVisible={this.state.isOpen}
+          isEditing={this.state.isEditing}
           onChange={this.onChange}
           addTask={this.addTask}
           onClose={this.onClose}
