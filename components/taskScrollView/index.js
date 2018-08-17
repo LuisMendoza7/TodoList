@@ -30,7 +30,7 @@ export class TaskScrollView extends Component {
           {tasks.map((item, index) => {
             if (!item.isDone) {
               return (
-                <TouchableOpacity key={index} onPress={() => openModal('modify', index)}>
+                <TouchableOpacity key={index} onPress={() => checkTask(index)} onLongPress={() => openModal('modify', index)}>
                   <TaskItem>
                     <Text>{item.title}</Text>
                     <CheckBox isChecked={item.isChecked} onClick={() => checkTask(index)} />
