@@ -21,7 +21,7 @@ export const DescriptionInput = styled.TextInput`
 export const Title = styled.Text`
   color: white
   font-weight: bold
-  font-size: 17px
+  font-size: 19px
   text-align: center
 `
 
@@ -67,7 +67,7 @@ export const TitleContainer = styled.View`
 `
 
 export const ButtonTitle = styled.Text`
-  font-size: 18
+  font-size: 17
   font-weight: bold
   color: white
 `
